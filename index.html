@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1280">
+    <title>MINISPRIN | 官方网站</title>
+    
+    <!-- 外部资源引用 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500;600&family=Source+Han+Sans+CN:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- 引入图标库 -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <!-- 导航栏 -->
+    <nav id="navbar" class="on-hero">
+        <a href="#hero" class="logo-wrap logo-nav">
+            MINI<span class="logo-divider"></span>SPRIN
+        </a>
+        <div class="nav-links">
+            <a href="#about" class="nav-item">关于本作</a>
+            <a href="#levels" class="nav-item">世界观</a>
+            <a href="#demo" class="nav-item">实机演示</a>
+            <a href="#changelog" class="nav-item">开发日志</a>
+            <a href="#team" class="nav-item">勇者小队</a>
+            <a href="#play" class="nav-item">开始冒险</a>
+        </div>
+    </nav>
+
+    <!-- 1. Hero 区域 -->
+    <section id="hero">
+        <canvas id="hero-canvas"></canvas>
+        <div class="hero-accent-line"></div>
+        <div class="hero-content">
+            <div class="hero-logo-container">
+                <h1 class="logo-hero">MINI<span class="logo-divider"></span>SPRIN</h1>
+                <div class="hero-logo-line"></div>
+            </div>
+            <p class="hero-subtitle">关于我和我的mini小组穿越到异世界，被迫组成勇者小队打倒魔王这件事，或许搞错了什么？</p>
+            <div class="btn-group">
+                <a href="#about" class="btn btn-primary">进入网站 ↓</a>
+                <!-- TODO: 替换为真实链接 -->
+                <a href="#" class="btn btn-secondary"><i data-lucide="github"></i> GitHub 仓库</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 斜切过渡 -->
+    <div class="skew-divider"></div>
+
+    <!-- 2. 关于本作 -->
+    <section id="about" class="fade-up">
+        <div class="bg-deco-text deco-text-left">ABOUT PROJECT</div>
+        <div class="container">
+            <h2 class="section-title">关于本作</h2>
+            <div class="about-grid">
+                <div class="about-col">
+                    <div class="about-col-label">故事背景</div>
+                    <p class="about-col-text">mini 小组在讨论开发方案时，突发意外穿越至异世界。这个世界的原住民误将小组成员认作"传说中的勇者小队"，并赋予他们打倒魔王、夺回名为"offer"的圣物以拯救世界的使命。小组成员本无特殊战斗能力，意外的是，四人原本具备的能力竟全部转化为了战斗力。为完成使命，mini 小组需不断踏上历险征程，收集"垂直实习""面经宝典""黄金简历"等神器强化自身，最终打倒魔王、夺回"offer"圣物，成功回归现实世界。</p>
+                </div>
+                <div class="about-col">
+                    <div class="about-col-label">游戏介绍</div>
+                    <p class="about-col-text">MINISPRIN是一款竖屏射击肉鸽闯关网页小游戏。你需要操控意外穿越到异世界的miniproject小组打倒魔王，拯救世界。操控角色激战敌人，战斗中可自由升级技能。涵盖道具收集与成就解锁双重体系，通关可获取特色道具、点亮成就图鉴，助力战力进阶。融入无厘头设定与团队创意，开放全团队创意投稿的趣味之作。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. 世界观 -->
+    <section id="levels" class="fade-up">
+        <div class="bg-deco-text deco-text-right">WORLD</div>
+        <h2 class="section-title">世界观</h2>
+        <div class="container container-flex-center gap-xlarge">
+            <!-- 左侧轮播 -->
+            <div class="boss-carousel">
+                <div class="boss-phone-frame">
+                    <div class="boss-screen" id="bossScreen">
+                        <!-- JS 动态填充 -->
+                    </div>
+                </div>
+                <div class="boss-nav">
+                    <button class="boss-arrow arrow-prev" id="bossPrev" aria-label="上一个"><i data-lucide="chevron-left"></i></button>
+                    <div class="boss-dots" id="bossDots" role="tablist" aria-label="关卡选择"></div>
+                    <button class="boss-arrow arrow-next" id="bossNext" aria-label="下一个"><i data-lucide="chevron-right"></i></button>
+                </div>
+            </div>
+            <!-- 右侧介绍 -->
+            <div class="boss-info">
+                <h3 id="bossName">【关卡名称】</h3>
+                <p id="bossDesc">【关卡介绍】</p>
+                <div class="boss-tags" id="bossTags">
+                    <span class="boss-tag">【标签】</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. 实机演示 -->
+    <section id="demo" class="fade-up">
+        <div class="bg-deco-text deco-text-right-high">SYSTEM</div>
+        <h2 class="section-title">实机演示</h2>
+        <div class="demo-box">
+            <!-- 左侧导航 -->
+            <div class="demo-nav" id="demoNav">
+                <button class="demo-nav-item active" data-type="combat">战斗</button>
+                <button class="demo-nav-item" data-type="upgrade">强化</button>
+                <button class="demo-nav-item" data-type="gacha">抽卡</button>
+                <button class="demo-nav-item" data-type="gallery">图鉴</button>
+                <button class="demo-nav-item" data-type="achieve">成就</button>
+            </div>
+            <!-- 中间演示内容 -->
+            <div class="demo-main">
+                <div class="phone-container">
+                    <button class="demo-arrow arrow-prev" id="prevBtn" aria-label="上一张"><i data-lucide="chevron-left"></i></button>
+                    <div class="phone-frame">
+                        <div class="phone-screen" id="phoneScreen">
+                            <!-- JS 动态填充图片 -->
+                        </div>
+                    </div>
+                    <button class="demo-arrow arrow-next" id="nextBtn" aria-label="下一张"><i data-lucide="chevron-right"></i></button>
+                    <div class="dot-indicators" id="dotIndicators">
+                        <!-- JS 动态填充指示点 -->
+                    </div>
+                </div>
+                <div class="demo-info">
+                    <h3 id="demoTitle">【此处输入玩法名称】</h3>
+                    <p id="demoDesc">【此处输入玩法介绍】</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. 开发日志 -->
+    <section id="changelog" class="fade-up">
+        <div class="bg-deco-text deco-text-center">LOGS</div>
+        <h2 class="section-title">开发日志</h2>
+        <div class="container container-narrow">
+            <div class="log-card">
+                <div class="log-header">
+                    <strong>v0.1.0 Beta</strong>
+                    <span class="log-date">2025.02.15</span>
+                </div>
+                <p>【此处输入更新内容】</p>
+            </div>
+            <div class="log-card">
+                <div class="log-header">
+                    <strong>v0.0.1 Alpha</strong>
+                    <span class="log-date">2025.01.01</span>
+                </div>
+                <p>【此处输入更新内容】</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. 开发团队 -->
+    <section id="team" class="fade-up">
+        <div class="bg-deco-text deco-text-bottom">TEAM</div>
+        <h2 class="section-title">开发团队</h2>
+        <div class="team-grid" id="teamGrid">
+            <!-- 成员卡片 1 (产品) -->
+            <div class="team-card">
+                <div class="avatar"><i data-lucide="user"></i></div>
+                <div class="role-pill">产品</div>
+                <h4 class="member-name">杨沐航</h4>
+                <p class="member-quote">我一直在哭</p>
+                <div class="contact-trigger">
+                    <button class="icon-btn contact-btn" aria-label="发送邮件"><i data-lucide="mail" size="18"></i></button>
+                    <button class="icon-btn contact-btn" aria-label="访问GitHub"><i data-lucide="github" size="18"></i></button>
+                </div>
+                <div class="contact-links">
+                    <a href="#"># 【此处输入链接地址】</a>
+                </div>
+            </div>
+            <!-- 成员卡片 2 (前端) -->
+            <div class="team-card">
+                <div class="avatar"><i data-lucide="code-2"></i></div>
+                <div class="role-pill">前端</div>
+                <h4 class="member-name">张锦添</h4>
+                <p class="member-quote">【此处输入留言】</p>
+                <div class="contact-trigger">
+                    <button class="icon-btn contact-btn" aria-label="发送邮件"><i data-lucide="mail" size="18"></i></button>
+                    <button class="icon-btn contact-btn" aria-label="访问GitHub"><i data-lucide="github" size="18"></i></button>
+                </div>
+                <div class="contact-links">
+                    <a href="#"># 【此处输入链接地址】</a>
+                </div>
+            </div>
+            <!-- 成员卡片 3 (前端) -->
+            <div class="team-card">
+                <div class="avatar"><i data-lucide="code-2"></i></div>
+                <div class="role-pill">前端</div>
+                <h4 class="member-name">李野</h4>
+                <p class="member-quote">【此处输入留言】</p>
+                <div class="contact-trigger">
+                    <button class="icon-btn contact-btn" aria-label="发送邮件"><i data-lucide="mail" size="18"></i></button>
+                    <button class="icon-btn contact-btn" aria-label="访问GitHub"><i data-lucide="github" size="18"></i></button>
+                </div>
+                <div class="contact-links">
+                    <a href="#"># 【此处输入链接地址】</a>
+                </div>
+            </div>
+            <!-- 成员卡片 4 (后端) -->
+            <div class="team-card">
+                <div class="avatar"><i data-lucide="database"></i></div>
+                <div class="role-pill">后端</div>
+                <h4 class="member-name">任海洋</h4>
+                <p class="member-quote">【此处输入留言】</p>
+                <div class="contact-trigger">
+                    <button class="icon-btn contact-btn" aria-label="发送邮件"><i data-lucide="mail" size="18"></i></button>
+                    <button class="icon-btn contact-btn" aria-label="访问GitHub"><i data-lucide="github" size="18"></i></button>
+                </div>
+                <div class="contact-links">
+                    <a href="#"># 【此处输入链接地址】</a>
+                </div>
+            </div>
+            <!-- 成员卡片 5 (设计) -->
+            <div class="team-card">
+                <div class="avatar"><i data-lucide="palette"></i></div>
+                <div class="role-pill">设计</div>
+                <h4 class="member-name">胡文涛</h4>
+                <p class="member-quote">【此处输入留言】</p>
+                <div class="contact-trigger">
+                    <button class="icon-btn contact-btn" aria-label="发送邮件"><i data-lucide="mail" size="18"></i></button>
+                    <button class="icon-btn contact-btn" aria-label="访问GitHub"><i data-lucide="github" size="18"></i></button>
+                </div>
+                <div class="contact-links">
+                    <a href="#"># 【此处输入链接地址】</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. 开始冒险 -->
+    <section id="play" class="fade-up">
+        <div class="container">
+            <div class="play-card">
+                <h2>准备好踏入异世界了吗？</h2>
+                <div class="btn-group mt-xl">
+                    <a href="#" class="btn btn-primary btn-lg">开始冒险 <i data-lucide="play"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="footer-logo">MINI<span class="logo-divider"></span>SPRIN</div>
+        <p class="copyright">© 2025 MUXI Studio · MINISPRIN All Rights Reserved.</p>
+    </footer>
+
+    <!-- 引入脚本文件 -->
+    <script src="js/main.js"></script>
+</body>
+</html>

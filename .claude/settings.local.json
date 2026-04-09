@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Read(//Users/hujiang/Desktop/.agents/skills/**)",
+      "Read(//Users/hujiang/.agents/**)",
+      "WebFetch(domain:minimax-algeng-chat-tts.oss-cn-wulanchabu.aliyuncs.com)",
+      "Bash(curl -sL \"https://minimax-algeng-chat-tts.oss-cn-wulanchabu.aliyuncs.com/ccv2%2F2026-04-09%2FMiniMax-M2.7%2F2041852327073157666%2F4357d75ce3c4a4ef01e45dcfd39db4e946bd0767a14d0068cd0358ed30cf033a..png?Expires=1775780245&OSSAccessKeyId=LTAI5tGLnRTkBjLuYPjNcKQ8&Signature=NPHpv%2FOYe5rtQq3TiqOBnFxQ%2B%2Fo%3D\" -o /tmp/game_world.png)",
+      "Read(//tmp/**)"
+    ]
+  }
+}
