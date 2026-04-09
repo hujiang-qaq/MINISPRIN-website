@@ -9,19 +9,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Hero 区域粒子背景 (Canvas 实现)
     initHeroParticles();
 
-    // 3. 实机演示系统逻辑
+    // 3. Play 区域粒子背景
+    initPlayParticles();
+
+    // 4. 实机演示系统逻辑
     initDemoSlider();
 
-    // 4. 世界观 Boss 轮播
+    // 5. 世界观 Boss 轮播
     initBossCarousel();
 
-    // 5. 勇者小队折叠面板
+    // 6. 勇者小队折叠面板
     initTeamContacts();
 
-    // 5. 导航栏与滚动逻辑
+    // 7. 导航栏与滚动逻辑
     initScrollLogic();
 
-    // 6. 入场动画监听 (Intersection Observer)
+    // 8. 入场动画监听 (Intersection Observer)
     initEntranceAnimations();
 });
 
@@ -49,8 +52,8 @@ function initHeroParticles() {
         reset() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
-            this.s = Math.random() * 1.5;
-            this.o = Math.random() * 0.5;
+            this.s = Math.random() * 2.5;
+            this.o = Math.random() * 0.6;
             this.v = Math.random() * 0.2 + 0.1;
         }
         update() {
@@ -68,7 +71,7 @@ function initHeroParticles() {
     function init() {
         resize();
         particles = [];
-        for (let i = 0; i < 80; i++) particles.push(new Particle());
+        for (let i = 0; i < 120; i++) particles.push(new Particle());
     }
 
     function animate() {
@@ -93,6 +96,78 @@ function initHeroParticles() {
 
     const heroSection = document.getElementById('hero');
     if (heroSection) heroObserver.observe(heroSection);
+
+    window.addEventListener('resize', init);
+    init();
+    animate();
+}
+
+/**
+ * Play 区域粒子效果
+ */
+function initPlayParticles() {
+    const canvas = document.getElementById('play-canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let isVisible = true;
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    class Particle {
+        constructor() {
+            this.reset();
+        }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.s = Math.random() * 2.5;
+            this.o = Math.random() * 0.5;
+            this.v = Math.random() * 0.15 + 0.05;
+        }
+        update() {
+            this.y -= this.v;
+            if (this.y < 0) this.reset();
+        }
+        draw() {
+            ctx.fillStyle = `rgba(230, 57, 70, ${this.o})`;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.s, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    function init() {
+        resize();
+        particles = [];
+        for (let i = 0; i < 80; i++) particles.push(new Particle());
+    }
+
+    function animate() {
+        if (!isVisible) {
+            requestAnimationFrame(animate);
+            return;
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+        requestAnimationFrame(animate);
+    }
+
+    const playObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            isVisible = entry.isIntersecting;
+        });
+    }, { threshold: 0 });
+
+    const playSection = document.getElementById('play');
+    if (playSection) playObserver.observe(playSection);
 
     window.addEventListener('resize', init);
     init();
@@ -248,20 +323,30 @@ function initScrollLogic() {
     const navbar = document.getElementById('navbar');
     const navItems = document.querySelectorAll('.nav-item');
     const sections = document.querySelectorAll('section');
+    const main = document.querySelector('main');
 
-    window.addEventListener('scroll', () => {
-        // 导航栏主题切换
-        if (window.scrollY < window.innerHeight - 100) {
-            navbar.classList.add('on-hero');
-        } else {
-            navbar.classList.remove('on-hero');
+    if (!main) return;
+
+    main.addEventListener('scroll', () => {
+        const scrollTop = main.scrollTop;
+        const clientHeight = main.clientHeight;
+
+        // 导航栏主题切换 - 根据第一个section是否可见
+        const hero = document.getElementById('hero');
+        if (hero) {
+            const heroBottom = hero.offsetTop + hero.offsetHeight;
+            if (scrollTop < heroBottom - 100) {
+                navbar.classList.add('on-hero');
+            } else {
+                navbar.classList.remove('on-hero');
+            }
         }
 
         // 当前位置高亮
         let currentSection = "";
         sections.forEach(s => {
             const sectionTop = s.offsetTop;
-            if (window.pageYOffset >= sectionTop - 200) {
+            if (scrollTop >= sectionTop - clientHeight / 2) {
                 currentSection = s.getAttribute('id');
             }
         });

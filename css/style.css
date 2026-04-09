@@ -23,6 +23,13 @@
     --border: #2a2a30;
     --border-light: #3a3a42;
 
+    /* 浅色主题 */
+    --bg-light: #F5F5FA;
+    --bg-light-secondary: #EBEBF2;
+    --text-dark: #1a1a1e;
+    --text-dark-secondary: #5a5a64;
+    --border-light-theme: #D0D0D8;
+
     /* 间距系统 (4pt) */
     --space-1: 4px;
     --space-2: 8px;
@@ -70,12 +77,121 @@ body {
 }
 
 /* ==========================================================================
-   全局通用样式 (布局与动画)
+   全屏滚动 Snap
    ========================================================================== */
+main {
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) var(--bg-secondary);
+}
+
+main::-webkit-scrollbar {
+    width: 6px;
+}
+
+main::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+main::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 3px;
+}
+
 section {
-    padding: var(--space-9) var(--space-8);
+    min-height: 100vh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     position: relative;
     z-index: 1;
+}
+
+/* Glass effect overlay for all sections */
+section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at 30% 0%, rgba(255,255,255,0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Decorative corner accent for dark sections (not overriding existing #hero and #play) */
+#changelog::before {
+    background:
+        linear-gradient(135deg, rgba(230,57,70,0.06) 0%, transparent 30%),
+        radial-gradient(ellipse at 70% 100%, rgba(230,57,70,0.04) 0%, transparent 40%);
+}
+
+/* Decorative corner accent for light sections */
+#about::before,
+#team::before {
+    background:
+        linear-gradient(135deg, rgba(230,57,70,0.05) 0%, transparent 30%),
+        radial-gradient(ellipse at 70% 100%, rgba(100,100,255,0.03) 0%, transparent 40%);
+}
+
+/* Extra accent layer for light sections using ::after */
+#about::after,
+#team::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 30%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Glass edge highlights for all sections */
+#hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+    pointer-events: none;
+    z-index: 3;
+}
+
+#levels::after,
+#demo::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(230,57,70,0.15) 50%, transparent 100%);
+    pointer-events: none;
+    z-index: 3;
+}
+
+#levels .container,
+#demo .container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Bottom decorative bar for dark sections */
+#hero .container,
+#levels .container,
+#changelog .container,
+#play .container {
+    position: relative;
+    z-index: 2;
 }
 
 .container {
@@ -157,6 +273,7 @@ section {
     left: 50%;
     transform: translateX(-50%);
     padding-bottom: var(--space-4);
+    color: var(--text-primary);
 }
 
 .section-title::after {
@@ -169,19 +286,33 @@ section {
     background: linear-gradient(90deg, transparent, var(--accent), transparent);
 }
 
+/* Section title for light backgrounds */
+#about .section-title,
+#demo .section-title,
+#team .section-title {
+    color: var(--text-dark);
+}
+
 .bg-deco-text {
     position: absolute;
     font-family: var(--font-display);
     font-size: clamp(100px, 18vw, 220px);
     font-weight: 700;
     color: var(--text-primary);
-    opacity: 0.04;
+    opacity: 0.06;
     z-index: -1;
     pointer-events: none;
     letter-spacing: 0.08em;
     user-select: none;
     white-space: nowrap;
     text-transform: uppercase;
+}
+
+/* Light section decorative text */
+#about .bg-deco-text,
+#team .bg-deco-text {
+    color: var(--text-dark);
+    opacity: 0.08;
 }
 
 /* ==========================================================================
@@ -331,7 +462,7 @@ nav:hover::before {
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0.5;
+    opacity: 0.7;
 }
 
 .hero-content {
@@ -504,23 +635,19 @@ nav:hover::before {
     font-size: 16px;
 }
 
-/* Dramatic skew divider */
+/* Dramatic skew divider - deprecated, using gradient transitions now */
 .skew-divider {
-    height: 100px;
-    background: var(--bg-secondary);
-    clip-path: polygon(0 100%, 100% 30%, 100% 100%, 0 100%);
-    margin-top: -100px;
-    position: relative;
-    z-index: 5;
+    display: none;
 }
 
 /* ==========================================================================
    3. 世界观
    ========================================================================== */
 #levels {
-    background: var(--bg-secondary);
+    background: var(--bg-primary);
     position: relative;
     overflow: hidden;
+    padding-top: 80px;
 }
 
 /* Background geometric accent */
@@ -714,18 +841,19 @@ nav:hover::before {
    4. 关于本作
    ========================================================================== */
 #about {
+    background: var(--bg-light);
     position: relative;
 }
 
 /* Diagonal accent line */
-#about::before {
+#about::after {
     content: '';
     position: absolute;
     top: 0;
     right: 0;
     width: 50%;
     height: 100%;
-    background: linear-gradient(135deg, rgba(230, 57, 70, 0.04) 0%, transparent 50%);
+    background: linear-gradient(135deg, rgba(230, 57, 70, 0.06) 0%, transparent 50%);
     pointer-events: none;
 }
 
@@ -763,7 +891,7 @@ nav:hover::before {
 }
 
 .about-col-text {
-    color: var(--text-secondary);
+    color: var(--text-dark-secondary);
     font-size: 15px;
     line-height: 2.2;
     max-width: 60ch;
@@ -773,32 +901,34 @@ nav:hover::before {
    5. 实机演示
    ========================================================================== */
 #demo {
-    background: var(--bg-primary);
+    background: var(--bg-light);
     position: relative;
+    padding-top: 80px;
 }
 
 /* Large geometric accent */
-#demo::before {
+#demo::after {
     content: '';
     position: absolute;
     top: 50%;
     left: -100px;
     width: 300px;
     height: 300px;
-    border: 1px solid rgba(230, 57, 70, 0.06);
+    border: 1px solid rgba(230, 57, 70, 0.08);
     transform: rotate(45deg);
     pointer-events: none;
 }
 
 .demo-box {
-    background: var(--bg-card);
+    background: var(--bg-light-secondary);
     border-radius: 8px;
     display: flex;
     height: 560px;
     overflow: hidden;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-light-theme);
     position: relative;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.08);
+    margin-top: -40px;
 }
 
 /* Top accent line */
@@ -814,11 +944,11 @@ nav:hover::before {
 
 .demo-nav {
     width: 180px;
-    background: var(--bg-secondary);
+    background: var(--bg-light);
     padding: var(--space-6) 0;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid var(--border);
+    border-right: 1px solid var(--border-light-theme);
     position: relative;
 }
 
@@ -835,7 +965,7 @@ nav:hover::before {
 .demo-nav-item {
     padding: var(--space-4) var(--space-5);
     cursor: pointer;
-    color: var(--text-secondary);
+    color: var(--text-dark-secondary);
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.05em;
@@ -860,8 +990,8 @@ nav:hover::before {
 }
 
 .demo-nav-item.active {
-    color: var(--text-primary);
-    background: var(--bg-tertiary);
+    color: var(--accent);
+    background: var(--bg-light-secondary);
 }
 
 .demo-nav-item.active::before {
@@ -892,7 +1022,7 @@ nav:hover::before {
 .phone-frame {
     width: 100%;
     height: 100%;
-    border: 8px solid var(--border-light);
+    border: 8px solid var(--border-light-theme);
     border-radius: 32px;
     background: var(--bg-phone);
     overflow: hidden;
@@ -925,11 +1055,11 @@ nav:hover::before {
     transform: translateY(-50%);
     width: 36px;
     height: 36px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
+    background: var(--bg-light);
+    border: 1px solid var(--border-light-theme);
     border-radius: 50%;
     cursor: pointer;
-    color: var(--text-secondary);
+    color: var(--text-dark-secondary);
     z-index: 10;
     display: flex;
     align-items: center;
@@ -964,7 +1094,7 @@ nav:hover::before {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--border-light);
+    background: var(--border-light-theme);
     transition: all var(--duration-fast) var(--ease-out);
     cursor: pointer;
 }
@@ -995,7 +1125,7 @@ nav:hover::before {
 
 .demo-info p {
     font-size: 14px;
-    color: var(--text-secondary);
+    color: var(--text-dark-secondary);
     line-height: 1.8;
 }
 
@@ -1003,7 +1133,7 @@ nav:hover::before {
    6. 开发日志
    ========================================================================== */
 #changelog {
-    background: var(--bg-secondary);
+    background: var(--bg-primary);
     position: relative;
 }
 
@@ -1066,10 +1196,11 @@ nav:hover::before {
 }
 
 /* ==========================================================================
-   7. 勇者小队
+   7. 开发团队
    ========================================================================== */
 #team {
-    background: var(--bg-primary);
+    background: var(--bg-light);
+    position: relative;
 }
 
 .team-grid {
@@ -1079,11 +1210,11 @@ nav:hover::before {
 }
 
 .team-card {
-    background: var(--bg-card);
+    background: var(--bg-light-secondary);
     padding: var(--space-6) var(--space-4);
     border-radius: 8px;
     text-align: center;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-light-theme);
     transition: all var(--duration-normal) var(--ease-out);
     position: relative;
     overflow: hidden;
@@ -1105,7 +1236,7 @@ nav:hover::before {
 .team-card:hover {
     transform: translateY(-6px);
     border-color: var(--accent);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 .team-card:hover::before {
@@ -1113,7 +1244,6 @@ nav:hover::before {
 }
 
 .team-card:hover .avatar {
-    background: var(--accent-subtle);
     border-color: var(--accent);
 }
 
@@ -1129,6 +1259,13 @@ nav:hover::before {
     color: var(--text-secondary);
     transition: all var(--duration-fast) var(--ease-out);
     border: 2px solid transparent;
+    overflow: hidden;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .role-pill {
@@ -1150,11 +1287,12 @@ nav:hover::before {
     font-weight: 600;
     margin-bottom: var(--space-2);
     letter-spacing: 0.02em;
+    color: var(--text-dark);
 }
 
 .member-quote {
     font-size: 13px;
-    color: var(--text-muted);
+    color: var(--text-dark-secondary);
     line-height: 1.6;
 }
 
@@ -1169,7 +1307,7 @@ nav:hover::before {
 
 .icon-btn {
     cursor: pointer;
-    color: var(--text-muted);
+    color: var(--text-dark-secondary);
     transition: color var(--duration-fast) var(--ease-out);
     background: none;
     border: none;
@@ -1196,7 +1334,7 @@ nav:hover::before {
     max-height: 80px;
     margin-top: var(--space-4);
     padding-top: var(--space-4);
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--border-light-theme);
 }
 
 .contact-links a {
@@ -1211,9 +1349,19 @@ nav:hover::before {
    8. 游玩区域与页脚
    ========================================================================== */
 #play {
-    background: var(--bg-secondary);
+    background: var(--bg-primary);
     position: relative;
     overflow: hidden;
+}
+
+#play-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.7;
+    z-index: 0;
 }
 
 /* Dramatic background accent */
@@ -1297,4 +1445,48 @@ footer .logo-wrap {
 .copyright {
     font-size: 13px;
     letter-spacing: 0.03em;
+}
+
+/* ==========================================================================
+   Section Footer (integrated in each section)
+   ========================================================================== */
+.section-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-6) var(--space-8);
+    text-align: center;
+    border-top: 1px solid var(--border);
+}
+
+.section-footer .footer-logo {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-2);
+}
+
+.section-footer .copyright {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Light section footer */
+#about .section-footer,
+#team .section-footer {
+    background: var(--bg-light);
+    border-top-color: var(--border-light-theme);
+}
+
+#about .section-footer .footer-logo,
+#team .section-footer .footer-logo {
+    color: var(--text-dark-secondary);
+}
+
+/* Make play section position relative for absolute footer */
+#play {
+    position: relative;
 }
