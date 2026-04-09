@@ -26,6 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 8. 入场动画监听 (Intersection Observer)
     initEntranceAnimations();
+
+    // 9. 时间轴 Tooltip
+    initTimelineTooltip();
 });
 
 /**
@@ -205,10 +208,21 @@ function initDemoSlider() {
         // 更新图片和圆点
         screen.innerHTML = '';
         dots.innerHTML = '';
+
+        // 实机截图映射
+        const demoImages = {
+            combat: ['images/combat-1.png', null, null],
+            upgrade: ['images/upgrade-1.png', 'images/upgrade-2.png', null],
+            gacha: ['images/gacha-1.png', 'images/gacha-2.png', null],
+            gallery: ['images/gallery-1.png', 'images/gallery-2.png', null],
+            achieve: [null, null, null]
+        };
+
         for (let i = 0; i < 3; i++) {
-            // 图片占位符
             const img = document.createElement('img');
-            img.src = `https://placehold.co/430x932/${i === 0 ? '6C63FF' : '7F8C8D'}/white?text=${curCat}+${i + 1}`;
+            const realImg = demoImages[curCat]?.[i];
+            img.src = realImg || `https://placehold.co/430x932/${i === 0 ? '6C63FF' : '7F8C8D'}/white?text=${curCat}+${i + 1}`;
+            img.alt = '';
             if (i === curIdx) img.className = 'active';
             screen.appendChild(img);
 
@@ -273,7 +287,14 @@ function initBossCarousel() {
 
         tagsEl.innerHTML = boss.tags.map(t => `<span class="boss-tag">${t}</span>`).join('');
 
-        screen.innerHTML = `<img src="https://placehold.co/430x932/${['6C63FF', 'FF6B6B', '4ECDC4', '45B7D1', '8E44AD'][curIdx]}/white?text=BOSS+${curIdx + 1}" alt="${boss.name}" class="active">`;
+        const bossImages = [
+            'images/boss1.png',
+            'images/boss2.png',
+            'images/boss3.png',
+            'images/boss4.png',
+            'images/boss5.png'
+        ];
+        screen.innerHTML = `<img src="${bossImages[curIdx]}" alt="${boss.name}" class="active">`;
 
         dots.innerHTML = bossData.map((_, i) => `<div class="dot ${i === curIdx ? 'active' : ''}"></div>`).join('');
     }
@@ -331,17 +352,6 @@ function initScrollLogic() {
         const scrollTop = main.scrollTop;
         const clientHeight = main.clientHeight;
 
-        // 导航栏主题切换 - 根据第一个section是否可见
-        const hero = document.getElementById('hero');
-        if (hero) {
-            const heroBottom = hero.offsetTop + hero.offsetHeight;
-            if (scrollTop < heroBottom - 100) {
-                navbar.classList.add('on-hero');
-            } else {
-                navbar.classList.remove('on-hero');
-            }
-        }
-
         // 当前位置高亮
         let currentSection = "";
         sections.forEach(s => {
@@ -373,4 +383,41 @@ function initEntranceAnimations() {
     }, { threshold: 0.1 });
 
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+}
+
+/**
+ * 时间轴 Tooltip
+ */
+function initTimelineTooltip() {
+    const nodes = document.querySelectorAll('.timeline-node');
+    const tooltip = document.getElementById('timelineTooltip');
+    const container = document.querySelector('.timeline-track');
+    if (!tooltip || nodes.length === 0 || !container) return;
+
+    nodes.forEach(node => {
+        node.addEventListener('mouseenter', () => {
+            const date = node.dataset.date;
+            const info = node.dataset.info;
+            tooltip.innerHTML = `<div class="tooltip-date">${date}</div><div class="tooltip-info">${info}</div>`;
+            tooltip.classList.add('visible');
+
+            // 定位到节点正上方
+            const nodeRect = node.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+            const tooltipRect = tooltip.getBoundingClientRect();
+
+            const left = nodeRect.left - containerRect.left + (nodeRect.width / 2) - (tooltipRect.width / 2);
+            const top = nodeRect.top - containerRect.top - tooltipRect.height - 12;
+
+            tooltip.style.left = `${left}px`;
+            tooltip.style.top = `${top}px`;
+        });
+
+        node.addEventListener('mouseleave', () => {
+            tooltip.classList.remove('visible');
+        });
+    });
+
+    // 重新初始化 Lucide 图标
+    lucide.createIcons();
 }

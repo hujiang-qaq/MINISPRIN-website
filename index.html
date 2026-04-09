@@ -18,8 +18,11 @@
 </head>
 <body>
 
-    <!-- 导航栏 -->
-    <nav id="navbar" class="on-hero">
+    <!-- 跳過導航連結 -->
+    <a href="#about" class="skip-link">跳過導航</a>
+
+    <!-- 導航欄 -->
+    <nav id="navbar">
         <a href="#hero" class="logo-wrap logo-nav">
             MINISPRIN
         </a>
@@ -46,8 +49,7 @@
                 <p class="hero-subtitle">关于我和我的mini小组穿越到异世界，被迫组成勇者小队打倒魔王这件事，或许搞错了什么？</p>
                 <div class="btn-group">
                     <a href="#about" class="btn btn-primary">进入网站 ↓</a>
-                    <!-- TODO: 替换为真实链接 -->
-                    <a href="#" class="btn btn-secondary"><i data-lucide="github"></i> GitHub 仓库</a>
+                    <a href="https://github.com/Sonwsonata/2026-MuxiShooter-FrontEnd.git" target="_blank" rel="noopener" class="btn btn-secondary"><i data-lucide="github"></i> GitHub 仓库</a>
                 </div>
             </div>
         </section>
@@ -81,10 +83,8 @@
             <div class="container container-flex-center gap-xlarge">
                 <!-- 左侧轮播 -->
                 <div class="boss-carousel">
-                    <div class="boss-phone-frame">
-                        <div class="boss-screen" id="bossScreen">
-                            <!-- JS 动态填充 -->
-                        </div>
+                    <div class="boss-screen" id="bossScreen">
+                        <!-- JS 动态填充 -->
                     </div>
                     <div class="boss-nav">
                         <button class="boss-arrow arrow-prev" id="bossPrev" aria-label="上一个"><i data-lucide="chevron-left"></i></button>
@@ -142,21 +142,52 @@
         <section id="changelog" class="fade-up">
             <div class="bg-deco-text deco-text-center">LOGS</div>
             <h2 class="section-title">开发日志</h2>
-            <div class="container container-narrow">
-                <div class="log-card">
-                    <div class="log-header">
-                        <strong>v0.1.0 Beta</strong>
-                        <span class="log-date">2025.02.15</span>
+            <div class="timeline-container">
+                <div class="timeline-track">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-nodes">
+                        <div class="timeline-node" data-date="25.12.15" data-info="mini小组诞生" aria-label="25.12.15: mini小组诞生">
+                            <div class="node-dot"></div>
+                            <div class="node-date">25.12.15</div>
+                            <div class="node-info">mini小组诞生</div>
+                        </div>
+                        <div class="timeline-node" data-date="25.12.21" data-info="idea成型" aria-label="25.12.21: idea成型">
+                            <div class="node-dot"></div>
+                            <div class="node-date">25.12.21</div>
+                            <div class="node-info">idea成型</div>
+                        </div>
+                        <div class="timeline-node" data-date="25.12.26" data-info="需求初审" aria-label="25.12.26: 需求初审">
+                            <div class="node-dot"></div>
+                            <div class="node-date">25.12.26</div>
+                            <div class="node-info">需求初审</div>
+                        </div>
+                        <div class="timeline-node" data-date="26.1.16" data-info="第二次评审" aria-label="26.1.16: 第二次评审">
+                            <div class="node-dot"></div>
+                            <div class="node-date">26.1.16</div>
+                            <div class="node-info">第二次评审</div>
+                        </div>
+                        <div class="timeline-node" data-date="26.1.19~1.25" data-info="寒假集中开发" aria-label="26.1.19~1.25: 寒假集中开发">
+                            <div class="node-dot"></div>
+                            <div class="node-date">26.1.19~1.25</div>
+                            <div class="node-info">寒假集中开发</div>
+                        </div>
+                        <div class="timeline-node" data-date="26.3.21" data-info="miniproject发布评审" aria-label="26.3.21: miniproject发布评审">
+                            <div class="node-dot"></div>
+                            <div class="node-date">26.3.21</div>
+                            <div class="node-info">miniproject发布评审</div>
+                        </div>
+                        <div class="timeline-node" data-date="26.4.11" data-info="miniproject发布会" aria-label="26.4.11: miniproject发布会">
+                            <div class="node-dot"></div>
+                            <div class="node-date">26.4.11</div>
+                            <div class="node-info">miniproject发布会</div>
+                        </div>
                     </div>
-                    <p>【此处输入更新内容】</p>
-                </div>
-                <div class="log-card">
-                    <div class="log-header">
-                        <strong>v0.0.1 Alpha</strong>
-                        <span class="log-date">2025.01.01</span>
+                    <div class="timeline-continue">
+                        <i data-lucide="chevron-right"></i>
+                        <span>To Be Continue...</span>
                     </div>
-                    <p>【此处输入更新内容】</p>
                 </div>
+                <div class="timeline-tooltip" id="timelineTooltip"></div>
             </div>
             <footer class="section-footer">
                 <div class="footer-logo">MINISPRIN</div>
@@ -180,7 +211,7 @@
                     <button class="icon-btn contact-btn" aria-label="访问GitHub"><i data-lucide="github" size="18"></i></button>
                 </div>
                 <div class="contact-links">
-                    <a href="#"># 【此处输入链接地址】</a>
+                    <a href="https://github.com/Sonwsonata/2026-MuxiShooter-FrontEnd.git" target="_blank" rel="noopener">GitHub 仓库</a>
                 </div>
             </div>
             <!-- 成员卡片 2 (前端) -->
@@ -194,7 +225,7 @@
                     <button class="icon-btn contact-btn" aria-label="访问GitHub"><i data-lucide="github" size="18"></i></button>
                 </div>
                 <div class="contact-links">
-                    <a href="#"># 【此处输入链接地址】</a>
+                    <a href="https://github.com/Sonwsonata/2026-MuxiShooter-FrontEnd.git" target="_blank" rel="noopener">GitHub 仓库</a>
                 </div>
             </div>
             <!-- 成员卡片 3 (前端) -->
@@ -208,7 +239,7 @@
                     <button class="icon-btn contact-btn" aria-label="访问GitHub"><i data-lucide="github" size="18"></i></button>
                 </div>
                 <div class="contact-links">
-                    <a href="#"># 【此处输入链接地址】</a>
+                    <a href="https://github.com/Sonwsonata/2026-MuxiShooter-FrontEnd.git" target="_blank" rel="noopener">GitHub 仓库</a>
                 </div>
             </div>
             <!-- 成员卡片 4 (后端) -->
@@ -222,7 +253,7 @@
                     <button class="icon-btn contact-btn" aria-label="访问GitHub"><i data-lucide="github" size="18"></i></button>
                 </div>
                 <div class="contact-links">
-                    <a href="#"># 【此处输入链接地址】</a>
+                    <a href="https://github.com/Sonwsonata/2026-MuxiShooter-FrontEnd.git" target="_blank" rel="noopener">GitHub 仓库</a>
                 </div>
             </div>
             <!-- 成员卡片 5 (设计) -->
@@ -236,14 +267,16 @@
                     <button class="icon-btn contact-btn" aria-label="访问GitHub"><i data-lucide="github" size="18"></i></button>
                 </div>
                 <div class="contact-links">
-                    <a href="#"># 【此处输入链接地址】</a>
+                    <a href="https://github.com/Sonwsonata/2026-MuxiShooter-FrontEnd.git" target="_blank" rel="noopener">GitHub 仓库</a>
                 </div>
             </div>
-            <footer class="section-footer">
-                <div class="footer-logo">MINISPRIN</div>
-                <p class="copyright">© 2025 MUXI Studio · MINISPRIN All Rights Reserved.</p>
-            </footer>
         </section>
+
+        <!-- 6.5 页脚 -->
+        <footer class="section-footer">
+            <div class="footer-logo">MINISPRIN</div>
+            <p class="copyright">© 2025 MUXI Studio · MINISPRIN All Rights Reserved.</p>
+        </footer>
 
         <!-- 7. 开始冒险 -->
         <section id="play" class="fade-up">
@@ -252,7 +285,7 @@
                 <div class="play-card">
                     <h2>准备好踏入异世界了吗？</h2>
                     <div class="btn-group mt-xl">
-                        <a href="#" class="btn btn-primary btn-lg">开始冒险 <i data-lucide="play"></i></a>
+                        <a href="https://github.com/Sonwsonata/2026-MuxiShooter-FrontEnd.git" target="_blank" rel="noopener" class="btn btn-primary btn-lg">开始冒险 <i data-lucide="play"></i></a>
                     </div>
                 </div>
             </div>
