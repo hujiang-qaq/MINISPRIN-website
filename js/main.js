@@ -29,6 +29,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 9. 时间轴 Tooltip
     initTimelineTooltip();
+
+    // 10. 吉祥物交互
+    initMascot();
+
+    // 彩蛋弹窗关闭
+    const modalClose = document.getElementById('modal-close');
+    const secretModal = document.getElementById('secret-modal');
+    if (modalClose && secretModal) {
+        modalClose.addEventListener('click', () => {
+            secretModal.style.display = 'none';
+        });
+    }
 });
 
 /**
@@ -211,11 +223,11 @@ function initDemoSlider() {
 
         // 实机截图映射
         const demoImages = {
-            combat: ['images/combat-1.png', null, null],
+            combat: ['images/combat-1.png', 'images/combat-2.png', 'images/combat-3.png'],
             upgrade: ['images/upgrade-1.png', 'images/upgrade-2.png', null],
             gacha: ['images/gacha-1.png', 'images/gacha-2.png', null],
             gallery: ['images/gallery-1.png', 'images/gallery-2.png', null],
-            achieve: [null, null, null]
+            achieve: ['images/achieve-1.png', 'images/achieve-2.png', null]
         };
 
         for (let i = 0; i < 3; i++) {
@@ -420,4 +432,171 @@ function initTimelineTooltip() {
 
     // 重新初始化 Lucide 图标
     lucide.createIcons();
+}
+
+/**
+ * 吉祥物交互
+ */
+function initMascot() {
+    const mascot = document.getElementById('mascot');
+    const img = document.getElementById('mascot-img');
+    const bubble = document.getElementById('mascot-bubble');
+    if (!mascot || !img) return;
+
+    const states = [
+        'images/mascot-normal.png',
+        'images/mascot-state1.png',
+        'images/mascot-state2.png',
+        'images/mascot-state3.png',
+        'images/mascot-state4.png'
+    ];
+    const dialogues = [
+        'hi～',
+        '喵喵喵？',
+        '产品一定要懂产品',
+        '前端实在是太简单了～',
+        '太阳升起后，就把昨天忘掉',
+        '汪汪汪？',
+        '更新在路上了',
+        '豆包豆包给我生成一个发布会小巧思',
+        '我从来没觉得当吉祥物开心过...',
+        '我无心与你一决高下',
+        '啦啦啦啦啦～好想玩minisprin～'
+    ];
+
+    let stateIndex = 0;
+    let isDragging = false;
+    let hasMoved = false;
+    let startX, startY, offsetX, offsetY;
+    let animating = null;
+    let bubbleTimer = null;
+
+    // 摇晃彩蛋
+    let shakeCount = 0;
+    let shakeTimer = null;
+    let lastX = 0, lastY = 0;
+    let isShaking = false;
+
+    // 设置图片
+    function setState(index) {
+        stateIndex = index % states.length;
+        img.src = states[stateIndex];
+    }
+
+    // 显示气泡
+    function showBubble(text) {
+        if (bubble) {
+            clearTimeout(bubbleTimer);
+            bubble.textContent = text;
+            bubble.classList.add('visible');
+            bubbleTimer = setTimeout(() => {
+                bubble.classList.remove('visible');
+            }, 2000);
+        }
+    }
+
+    // 显示弹窗
+    function showSecretModal() {
+        const modal = document.getElementById('secret-modal');
+        if (modal) modal.style.display = 'flex';
+    }
+
+    // 拖拽开始
+    mascot.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        hasMoved = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        offsetX = mascot.offsetLeft;
+        offsetY = mascot.offsetTop;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        cancelAnimationFrame(animating);
+    });
+
+    // 拖拽移动
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+            hasMoved = true;
+            setState(1); // 拖拽时显示state2
+
+            // 摇晃检测
+            const moveDelta = Math.abs(e.clientX - lastX) + Math.abs(e.clientY - lastY);
+            if (moveDelta > 20) {
+                if (!isShaking) {
+                    isShaking = true;
+                    shakeTimer = setTimeout(() => {
+                        shakeCount++;
+                        isShaking = false;
+                        if (shakeCount >= 4) {
+                            showSecretModal();
+                            shakeCount = 0;
+                        } else {
+                            const msgs = ['救命...', '头好晕...', '救命...'];
+                            showBubble(msgs[shakeCount - 1]);
+                        }
+                    }, 2000);
+                }
+            }
+            lastX = e.clientX;
+            lastY = e.clientY;
+        }
+        mascot.style.left = (offsetX + dx) + 'px';
+        mascot.style.top = (offsetY + dy) + 'px';
+        mascot.style.bottom = 'auto';
+    });
+
+    // 拖拽结束 - 落到网页底部
+    document.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        isShaking = false;
+        clearTimeout(shakeTimer);
+        if (hasMoved) {
+            fallToBottom();
+        }
+    });
+
+    // 点击切换
+    mascot.addEventListener('click', () => {
+        setState(stateIndex + 1);
+        showBubble(dialogues[Math.floor(Math.random() * dialogues.length)]);
+    });
+
+    // 下落到底部
+    function fallToBottom() {
+        const maxX = window.innerWidth - mascot.offsetWidth;
+        const maxY = window.innerHeight - mascot.offsetHeight;
+
+        let x = mascot.offsetLeft;
+        let y = mascot.offsetTop;
+
+        // 水平边界限制
+        if (x < 0) x = 0;
+        if (x > maxX) x = maxX;
+        // 上边界限制
+        if (y < 0) y = 0;
+
+        // 落到网页底部
+        mascot.style.left = x + 'px';
+        mascot.style.top = y + 'px';
+        mascot.style.bottom = 'auto';
+
+        const step = () => {
+            y += 8;
+            if (y >= maxY) {
+                y = maxY;
+                mascot.style.left = x + 'px';
+                mascot.style.top = y + 'px';
+                mascot.style.bottom = 'auto';
+                return;
+            }
+            mascot.style.top = y + 'px';
+            animating = requestAnimationFrame(step);
+        };
+        step();
+    }
 }
