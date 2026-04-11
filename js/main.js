@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Play 区域粒子背景
     initPlayParticles();
+    initSectionParticles('levels-canvas', '255, 255, 255', 50);
+    initSectionParticles('changelog-canvas', '255, 255, 255', 50);
 
     // 4. 实机演示系统逻辑
     initDemoSlider();
@@ -39,6 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modalClose && secretModal) {
         modalClose.addEventListener('click', () => {
             secretModal.style.display = 'none';
+        });
+        // ESC键关闭弹窗
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && secretModal.style.display === 'flex') {
+                secretModal.style.display = 'none';
+            }
         });
     }
 });
@@ -190,6 +198,78 @@ function initPlayParticles() {
 }
 
 /**
+ * 通用粒子效果
+ */
+function initSectionParticles(canvasId, color = '230, 57, 70', count = 60) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let isVisible = true;
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    class Particle {
+        constructor() {
+            this.reset();
+        }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.s = Math.random() * 2.5 + 1.5;
+            this.o = Math.random() * 0.4 + 0.5;
+            this.v = Math.random() * 0.15 + 0.08;
+        }
+        update() {
+            this.y -= this.v;
+            if (this.y < 0) this.reset();
+        }
+        draw() {
+            ctx.fillStyle = `rgba(${color}, ${this.o})`;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.s, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    function init() {
+        resize();
+        particles = [];
+        for (let i = 0; i < count; i++) particles.push(new Particle());
+    }
+
+    function animate() {
+        if (!isVisible) {
+            requestAnimationFrame(animate);
+            return;
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+        requestAnimationFrame(animate);
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            isVisible = entry.isIntersecting;
+        });
+    }, { threshold: 0 });
+
+    const section = document.getElementById(canvasId.replace('-canvas', ''));
+    if (section) observer.observe(section);
+
+    window.addEventListener('resize', init);
+    init();
+    animate();
+}
+
+/**
  * 实机演示轮播逻辑
  */
 function initDemoSlider() {
@@ -212,6 +292,15 @@ function initDemoSlider() {
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
 
+    // 实机截图映射
+    const demoImages = {
+        combat: ['images/combat-1.png', 'images/combat-2.png', 'images/combat-3.png'],
+        upgrade: ['images/upgrade-1.png', 'images/upgrade-2.png'],
+        gacha: ['images/gacha-1.png', 'images/gacha-2.png'],
+        gallery: ['images/gallery-1.png', 'images/gallery-2.png'],
+        achieve: ['images/achieve-1.png', 'images/achieve-2.png']
+    };
+
     function updateView() {
         // 更新文字
         title.innerText = demoData[curCat].t;
@@ -221,19 +310,15 @@ function initDemoSlider() {
         screen.innerHTML = '';
         dots.innerHTML = '';
 
-        // 实机截图映射
-        const demoImages = {
-            combat: ['images/combat-1.png', 'images/combat-2.png', 'images/combat-3.png'],
-            upgrade: ['images/upgrade-1.png', 'images/upgrade-2.png', null],
-            gacha: ['images/gacha-1.png', 'images/gacha-2.png', null],
-            gallery: ['images/gallery-1.png', 'images/gallery-2.png', null],
-            achieve: ['images/achieve-1.png', 'images/achieve-2.png', null]
-        };
+        const images = demoImages[curCat] || [];
+        const maxIdx = images.length;
 
-        for (let i = 0; i < 3; i++) {
+        // 确保 curIdx 不超出范围
+        if (curIdx >= maxIdx) curIdx = 0;
+
+        for (let i = 0; i < maxIdx; i++) {
             const img = document.createElement('img');
-            const realImg = demoImages[curCat]?.[i];
-            img.src = realImg || `https://placehold.co/430x932/${i === 0 ? '6C63FF' : '7F8C8D'}/white?text=${curCat}+${i + 1}`;
+            img.src = images[i];
             img.alt = '';
             if (i === curIdx) img.className = 'active';
             screen.appendChild(img);
@@ -258,12 +343,14 @@ function initDemoSlider() {
 
     // 翻页
     if(prevBtn) prevBtn.addEventListener('click', () => {
-        curIdx = (curIdx - 1 + 3) % 3;
+        const max = demoImages[curCat].length;
+        curIdx = (curIdx - 1 + max) % max;
         updateView();
     });
-    
+
     if(nextBtn) nextBtn.addEventListener('click', () => {
-        curIdx = (curIdx + 1) % 3;
+        const max = demoImages[curCat].length;
+        curIdx = (curIdx + 1) % max;
         updateView();
     });
 
@@ -308,7 +395,7 @@ function initBossCarousel() {
         ];
         screen.innerHTML = `<img src="${bossImages[curIdx]}" alt="${boss.name}" class="active">`;
 
-        dots.innerHTML = bossData.map((_, i) => `<div class="dot ${i === curIdx ? 'active' : ''}"></div>`).join('');
+        dots.innerHTML = bossData.map((_, i) => `<button class="dot ${i === curIdx ? 'active' : ''}" aria-label="关卡${i + 1}"></button>`).join('');
     }
 
     prevBtn.addEventListener('click', () => {
@@ -467,6 +554,7 @@ function initMascot() {
     let stateIndex = 0;
     let isDragging = false;
     let hasMoved = false;
+    let touchFired = false;
     let startX, startY, offsetX, offsetY;
     let animating = null;
     let bubbleTimer = null;
@@ -514,17 +602,56 @@ function initMascot() {
         cancelAnimationFrame(animating);
     });
 
+    // 触摸拖拽开始
+    mascot.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        isDragging = true;
+        hasMoved = false;
+        touchFired = true;
+        startX = touch.clientX;
+        startY = touch.clientY;
+        offsetX = mascot.offsetLeft;
+        offsetY = mascot.offsetTop;
+        lastX = touch.clientX;
+        lastY = touch.clientY;
+        cancelAnimationFrame(animating);
+        e.preventDefault();
+    }, { passive: false });
+
     // 拖拽移动
     document.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
+        handleDragMove(e.clientX, e.clientY);
+    });
+
+    // 触摸拖拽移动
+    document.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const touch = e.touches[0];
+        handleDragMove(touch.clientX, touch.clientY);
+        e.preventDefault();
+    }, { passive: false });
+
+    // 拖拽结束 - 落到网页底部
+    document.addEventListener('mouseup', () => {
+        handleDragEnd();
+    });
+
+    // 触摸拖拽结束
+    document.addEventListener('touchend', () => {
+        handleDragEnd();
+    });
+
+    // 处理拖拽移动
+    function handleDragMove(clientX, clientY) {
+        const dx = clientX - startX;
+        const dy = clientY - startY;
         if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
             hasMoved = true;
-            setState(1); // 拖拽时显示state2
+            setState(1);
 
             // 摇晃检测
-            const moveDelta = Math.abs(e.clientX - lastX) + Math.abs(e.clientY - lastY);
+            const moveDelta = Math.abs(clientX - lastX) + Math.abs(clientY - lastY);
             if (moveDelta > 20) {
                 if (!isShaking) {
                     isShaking = true;
@@ -541,16 +668,16 @@ function initMascot() {
                     }, 2000);
                 }
             }
-            lastX = e.clientX;
-            lastY = e.clientY;
+            lastX = clientX;
+            lastY = clientY;
         }
         mascot.style.left = (offsetX + dx) + 'px';
         mascot.style.top = (offsetY + dy) + 'px';
         mascot.style.bottom = 'auto';
-    });
+    }
 
-    // 拖拽结束 - 落到网页底部
-    document.addEventListener('mouseup', () => {
+    // 处理拖拽结束
+    function handleDragEnd() {
         if (!isDragging) return;
         isDragging = false;
         isShaking = false;
@@ -558,12 +685,23 @@ function initMascot() {
         if (hasMoved) {
             fallToBottom();
         }
-    });
+        setTimeout(() => { touchFired = false; }, 10);
+    }
 
-    // 点击切换
+    // 点击切换（触摸后不触发）
     mascot.addEventListener('click', () => {
+        if (touchFired) return;
         setState(stateIndex + 1);
         showBubble(dialogues[Math.floor(Math.random() * dialogues.length)]);
+    });
+
+    // 键盘支持
+    mascot.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setState(stateIndex + 1);
+            showBubble(dialogues[Math.floor(Math.random() * dialogues.length)]);
+        }
     });
 
     // 下落到底部

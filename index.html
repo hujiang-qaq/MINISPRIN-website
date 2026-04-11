@@ -78,6 +78,7 @@
 
         <!-- 3. 世界观 -->
         <section id="levels" class="fade-up">
+            <canvas id="levels-canvas"></canvas>
             <div class="bg-deco-text deco-text-right">WORLD</div>
             <h2 class="section-title">世界观</h2>
             <div class="container container-flex-center gap-xlarge">
@@ -140,6 +141,7 @@
 
         <!-- 5. 开发日志 -->
         <section id="changelog" class="fade-up">
+            <canvas id="changelog-canvas"></canvas>
             <div class="bg-deco-text deco-text-center">LOGS</div>
             <h2 class="section-title">开发日志</h2>
             <div class="timeline-container">
@@ -233,7 +235,7 @@
                 <div class="avatar"><img src="images/ly-portrait.jpg" alt="李野" class="avatar-img"></div>
                 <div class="role-pill">前端</div>
                 <h4 class="member-name">李野</h4>
-                <p class="member-quote">【此处输入留言】</p>
+                <p class="member-quote">爱拼才会赢</p>
                 <div class="contact-trigger">
                     <button class="icon-btn contact-btn" aria-label="发送邮件"><i data-lucide="mail" size="18"></i></button>
                     <button class="icon-btn contact-btn" aria-label="访问GitHub"><i data-lucide="github" size="18"></i></button>
@@ -247,7 +249,7 @@
                 <div class="avatar"><img src="images/rhy- portrait.jpeg" alt="任海洋" class="avatar-img"></div>
                 <div class="role-pill">后端</div>
                 <h4 class="member-name">任海洋</h4>
-                <p class="member-quote">【此处输入留言】</p>
+                <p class="member-quote">没啥想写的</p>
                 <div class="contact-trigger">
                     <button class="icon-btn contact-btn" aria-label="发送邮件"><i data-lucide="mail" size="18"></i></button>
                     <button class="icon-btn contact-btn" aria-label="访问GitHub"><i data-lucide="github" size="18"></i></button>
@@ -297,7 +299,7 @@
     </main>
 
     <!-- 吉祥物 -->
-    <div id="mascot">
+    <div id="mascot" tabindex="0" role="button" aria-label="吉祥物，点击切换状态，拖拽移动">
         <div class="mascot-bubble" id="mascot-bubble"></div>
         <img src="images/mascot-normal.png" alt="吉祥物" id="mascot-img">
     </div>
